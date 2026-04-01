@@ -14,23 +14,26 @@ const docs = new Map();
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws, req) => {
-  const docName = "monaco";
-
-  let doc = docs.get(docName);
-  if (!doc) {
-    doc = new Y.Doc();
-    docs.set(docName, doc);
-  }
-
-  ws.on("message", (message) => {
-    const update = new Uint8Array(message);
-    Y.applyUpdate(doc, update);
+    const url = new URL(req.url, "http://localhost");
+  
+    // ✅ get room from URL path
+    const docName = url.pathname.slice(1) || "default";
+  
+    let doc = docs.get(docName);
+    if (!doc) {
+      doc = new Y.Doc();
+      docs.set(docName, doc);
+    }
+  
+    ws.on("message", (message) => {
+      const update = new Uint8Array(message);
+      Y.applyUpdate(doc, update);
+    });
+  
+    doc.on("update", (update) => {
+      ws.send(update);
+    });
   });
-
-  doc.on("update", (update) => {
-    ws.send(update);
-  });
-});
 
 // health check
 app.get("/health", (req, res) => {
