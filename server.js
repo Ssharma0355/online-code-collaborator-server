@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { YSocketIO } from "y-socket.io";
+import { YSocketIO } from "y-socket.io"; // ✅ FIXED
 
 const app = express();
 app.use(express.static("public"));
