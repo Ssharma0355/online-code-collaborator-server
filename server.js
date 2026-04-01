@@ -8,13 +8,13 @@ const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(app);
 
-// simple in-memory doc store
+// in-memory docs
 const docs = new Map();
 
 const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws, req) => {
-  const docName = "monaco"; // you can make this dynamic later
+  const docName = "monaco";
 
   let doc = docs.get(docName);
   if (!doc) {
@@ -23,12 +23,8 @@ wss.on("connection", (ws, req) => {
   }
 
   ws.on("message", (message) => {
-    try {
-      const update = new Uint8Array(message);
-      Y.applyUpdate(doc, update);
-    } catch (err) {
-      console.error(err);
-    }
+    const update = new Uint8Array(message);
+    Y.applyUpdate(doc, update);
   });
 
   doc.on("update", (update) => {
@@ -36,6 +32,7 @@ wss.on("connection", (ws, req) => {
   });
 });
 
+// health check
 app.get("/health", (req, res) => {
   res.json({ message: "OK" });
 });
