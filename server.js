@@ -4,7 +4,6 @@ import { Server } from "socket.io";
 import { YSocketIO } from "y-socket.io/dist/server";
 
 const app = express();
-app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3000;
 
