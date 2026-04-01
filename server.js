@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { YSocketIO } from "y-socket.io/dist/server"
 
 const app = express()
+// middleware
 app.use(express.static("public"))
 
 
